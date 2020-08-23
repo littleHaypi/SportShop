@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<title>小太阳运动商城</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="back/css/register.css">
+<link rel="stylesheet" href="css/wrap.css">
+<link rel="short icon" href="images/logo2.png" type="image/x-icon">
+<script type="text/javascript" src="back/js/jquery.min.js"></script>
+<script type="text/javascript" src="js/passwordStrength.js"></script> 
+<script src="sweetalert-master/docs/assets/sweetalert/sweetalert.min.js"></script>
+<script type="text/javascript">
+//用户名
+function up1(){
+	   var account= $('#account').val();
+	    if (account!= undefined && account!= null && account!= "") {
+	        $.post("user",{op:"existname",uname:account},data=>{
+	        	
+	        	data=parseInt($.trim(data));
+	        	console.info(data);
+	        	if(data==500){
+	        		
+	        	$('#account').val("");
+	       		 swal({ 
+	   			  title: "注册信息提示", 
+	   			  text: "此用户名已存在", 
+	   			  timer: 2000, 
+	   			  showConfirmButton: false 
+	   			});
+	        	}
+	        },"text");
+	    	
+	     }
+}
+//邮箱
+function up2(){
+	   var email= $('#email').val();
+	    if (email!= undefined && email!= null && email!= "") {
+	        $.post("user",{op:"existemail",email:email},data=>{
+	        	
+	        	data=parseInt($.trim(data));
+	        	console.info(data);
+	        	if(data!=500){
+	        		
+	        	$('#email').val("");
+	       		 swal({ 
+	   			  title: "注册信息提示", 
+	   			  text: "此邮箱不存在", 
+	   			  timer: 2000, 
+	   			  showConfirmButton: false 
+	   			});
+	        	}
+	        },"text");
+	    	
+	     }
+}
+function checkpwd(){
+	 var pwd= $('#pwd').val();
+	 var repwd= $('#repwd').val();
+	 if(pwd!=repwd){
+		 $('#repwd').val("");
+   		 swal({ 
+  			  title: "注册信息提示", 
+  			  text: "两次密码输入不一致", 
+  			  timer: 2000, 
+  			  showConfirmButton: false 
+  			}); 
+	 }
+}
+$(document).keydown(function(e){
+	if(!e){
+		window.event;
+	}
+	if(e.keyCode==13){
+		checkLogin();
+	}
+})
+$(document).ready(function () {
+ up1();
+ up2();
+});
+
+function rePwd(){
+	var pwd = $.trim($("#pwd").val());
+	var email=$.trim($("#email").val());
+	
+	var verify=$.trim($("#verify").val());
+	var repwd=$.trim($("#repwd").val());
+	if (pwd ==""||pwd=="null") {
+		 swal({ 
+			  title: "登录信息提示", 
+			  text:"请输入您的重置密码", 
+			  timer: 2000, 
+			  showConfirmButton: false 
+			});
+		return;
+	}
+	if (email==""||email=="null") {
+		 swal({ 
+			  title: "登录信息提示", 
+			  text:"请输入您的邮箱", 
+			  timer: 2000, 
+			  showConfirmButton: false 
+			});
+		return;
+	}
+	if (verify==""||verify=="null") {
+		 swal({ 
+			  title: "登录信息提示", 
+			  text:"请输入您的注册码", 
+			  timer: 2000, 
+			  showConfirmButton: false 
+			});
+		return;
+	}
+	if (repwd==""||repwd=="null") {
+		 swal({ 
+			  title: "登录信息提示", 
+			  text:"请再输入您重置的密码", 
+			  timer: 2000, 
+			  showConfirmButton: false 
+			});
+		return;
+	}
+    $.post("user",{op:"repwd",email:email,pwd:pwd,verify:verify},data=>{
+    	
+    	data=parseInt($.trim(data));
+    	
+    	if(data==1){
+    		swal("Very Good!","恭喜您，重置成功!!","success" );
+    	}else if(data==500){
+    		swal("Unfortunately！","很遗憾，您输入验证码不正确,重置失败了！","error" );
+    	}else{
+    		swal("Unfortunately！","很遗憾，重置失败了！","error" );
+    	}
+    },"text");
+	
+}
+$(document).ready(function(){
+    $('#show_pic').click(function(){
+        $('#img_upload').click();
+    });
+
+});
+
+</script>
+</head>
+<body>
+
+<div class="wrap">
+
+	   	<div class="slogn1">时尚购物无距离</div>
+		<div class="slogn2">健康运动无极限</div>
+    <!--部署内外层图片-->
+    <div class="cube">
+ 
+        <!--前面图片 -->
+        <div class="out_front">
+            <img src="https://i.loli.net/2020/08/08/wbuUQ4kOfPjgKz1.jpg" class="pic">
+        </div>
+        <!--后面图片 -->
+	
+        <div class="out_back">
+            <img src="https://i.loli.net/2020/08/08/1Utep2RFQuD5n8j.jpg" class="pic">
+        </div>
+        <!--左面图片 -->
+        <div class="out_left">
+            <img src="https://i.loli.net/2020/08/08/QbDM7wCHnVjI3l6.jpg" class="pic">
+        </div>
+        <!--右面图片 -->
+        <div class="out_right">
+            <img src="https://i.loli.net/2020/08/08/iqWdDM9ua7zSRfK.jpg" class="pic">
+        </div>
+        <!--上面图片 -->
+           <div class="out_top">
+            <img src="https://i.loli.net/2020/08/08/AmXcUzxEhiMLq9a.jpg" class="pic">
+        </div>
+        <!--下面图片 -->
+        <div class="out_bottom">
+            <img src="https://i.loli.net/2020/08/08/AsDe5Xh2VJofiHj.jpg" class="pic">
+        </div>
+
+        <!--小正方体 -->
+        <span class="in_front">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_back">
+                 <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_left">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_right">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_top">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_bottom">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+
+    </div>
+ 
+</div>
+
+
+		<div id="login_a">
+
+			<div id="login_form" style="background:#57DDF1;">
+			<img id="touxiang"  src="images/logo2.png" style="border-radius: 50%;margin-left: 30px;width: 80px;height: 80px;margin-top: 20px; -moz-box-shadow:0 0 10px red, 2px 2px 10px 10px yellow, 4px 4px 12px 12px green;-webkit-box-shadow:0 0 10px red,  2px 2px 10px 10px yellow,4px 4px 12px 12px green; box-shadow:0 0 10px red,  2px 2px 10px 10px yellow,  4px 4px 12px 12px green;"/>  
+                <form action="index.html" method="post" id="myform">
+					<div id="login_tip">
+					<div id="back">
+                    <a href="userLogin.html">返回登录</a>
+		            </div>
+		            <a href="userLogin.html"><img style="width: 30px;height:30px;float:right;padding-top: 6px;" src="images/返回.png"></a>
+					</div>
+					<div><input type="text" class="username" id="email" placeholder="请输入邮箱号......." onblur="up2()"></div>
+					<div><input type="password" class="pwd" id="pwd" placeholder="请输入重置密码......." maxlength="16">
+					<div class="pass-wrap"> <em style="color: white;">密码强度：</em> <div id="passStrength"></div></div></div>
+					<div><input type="password" class="pwd" id="repwd" placeholder="请再次输入重置密码....." maxlength="16" onblur="checkpwd()"></div>
+					<div><input type="text" class="verify" id="verify" style="padding-left: 40px" placeholder="请输入验证码...."/><div id="slider">
+			     	<div class="drag_bg"></div>
+			    	<div class="drag_text" onselectstart="return false;" unselectable="on">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;拖动滑块发送</div>
+			    	<div class="handler handler_bg"></div>
+			        </div></div>
+              
+
+		     
+					<div id="btn_area">
+						<input type="button"  onclick="rePwd()" id="sub_btn" value="重&nbsp;置&nbsp;密&nbsp;码">&nbsp;&nbsp;
+					</div>
+				</form>
+			</div>
+		</div>
+
+	<div id="login_bottom" style="position: absolute;bottom: 10px;right: 20px;">
+		<label style="color:#FFF"><a class="copy" href="http://www.hyycinfo.com">小太阳运动商城 </a>&copy; 版权所有</label>
+	</div>
+<script type="text/javascript" src="js/showpic.js"></script>
+<script type="text/javascript" src="js/ajaxfileupload.js"></script>
+<script>
+function sendEmail(){
+    var email= $('#email').val();
+		    if (email!= undefined && email!= null && email!= ""){
+		        $.post("user",{op:"email",email:email},data=>{
+             	data=parseInt($.trim(data));
+		        	console.info(data);
+		        	if(data==200){
+		        		
+		        	$('#account').val("");
+		       		 swal({ 
+		   			  title: "注册信息提示", 
+		   			  text: "邮箱成功", 
+		   			  timer: 2000, 
+		   			  showConfirmButton: false 
+		   			});
+		        	}
+		        },"text");
+		    	
+		     }
+	}
+	(function(window, document, undefined) {
+		var dog = { //声明一个命名空间，或者称为对象
+			$: function(id) {
+				return document.querySelector(id);
+			},
+			on: function(el, type, handler) {
+				el.addEventListener(type, handler, false);
+			},
+			off: function(el, type, handler) {
+				el.removeEventListener(type, handler, false);
+			}
+		};
+		//封装一个滑块类
+		function Slider() {
+			var args = arguments[0];
+			for(var i in args) {
+				this[i] = args[i]; //一种快捷的初始化配置
+			}
+			//直接进行函数初始化，表示生成实例对象就会执行初始化
+			this.init();
+		}
+		Slider.prototype = {
+			constructor: Slider,
+			init: function() {
+				this.getDom();
+				this.dragBar(this.handler);
+			},
+			getDom: function() {
+				this.slider = dog.$('#' + this.id);
+				this.handler = dog.$('.handler');
+				this.drag_text = dog.$('.drag_text');
+				this.bg = dog.$('.drag_bg');
+			},
+			dragBar: function(handler) {
+				var that = this,
+					startX = 0,
+					lastX = 0,
+					doc = document,
+					width = this.slider.offsetWidth,
+					max = width - handler.offsetWidth,
+					drag = {
+                       //按下鼠标的时候
+						down: function(e) {
+							var e = e || window.event;
+							that.slider.classList.add('unselect');
+							startX = e.clientX - handler.offsetLeft;
+							console.log('startX: ' + startX + ' px');
+							dog.on(doc, 'mousemove', drag.move);
+							dog.on(doc, 'mouseup', drag.up);
+							return false;
+						},
+                          //鼠标拖动的时候
+						move: function(e) {
+							var email=$('#email').val();
+							if (email==undefined||email==null ||email==""){
+					       		 swal({ 
+					   			  title: "注册信息提示", 
+					   			  text: "请先输入您的邮箱", 
+					   			  timer: 2000, 
+					   			  showConfirmButton: false 
+					   			});
+					       		 return;
+							}
+							var e = e || window.event;
+							lastX = e.clientX - startX;
+							lastX = Math.max(0, Math.min(max, lastX)); //这一步表示距离大于0小于max，巧妙写法
+							console.log('lastX: ' + lastX + ' px');
+							if(lastX >= max) {
+								handler.classList.add('handler_ok_bg');
+								that.slider.classList.add('slide_ok');
+								that.drag_text.innerHTML = '已发送';
+								sendEmail();
+								dog.off(handler, 'mousedown', drag.down);
+								drag.up();
+							}
+							that.bg.style.width = lastX + 'px';
+							handler.style.left = lastX + 'px';
+
+						},
+                            //未完成时松开鼠标
+						up: function(e) {
+							var e = e || window.event;
+							that.slider.classList.remove('unselect');
+							if(lastX < width) {
+								that.bg.classList.add('ani');
+								handler.classList.add('ani');
+								that.bg.style.width = 0;
+								handler.style.left = 0;
+								setTimeout(function() {
+									that.bg.classList.remove('ani');
+									handler.classList.remove('ani');
+								}, 300);
+
+							}
+							dog.off(doc, 'mousemove', drag.move);
+							dog.off(doc, 'mouseup', drag.up);
+						}
+					};
+
+				dog.on(handler, 'mousedown', drag.down);
+			}
+		};
+
+		window.S = window.Slider = Slider;
+
+	})(window, document);
+
+	var defaults = {
+		id: 'slider'
+	};
+	new S(defaults);
+</script>
+<script type="text/javascript"> 
+new PasswordStrength('pwd','passStrength'); 
+</script> 
+</body>
+</html>

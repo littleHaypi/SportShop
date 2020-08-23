@@ -1,0 +1,446 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>小太阳运动商城-商品详情</title>
+<link rel="short icon" href="images/logo2.png" type="image/x-icon">
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/details.css">
+</head>
+<script src="sweetalert-master/docs/assets/sweetalert/sweetalert.min.js"></script>
+<body>
+<div id="login_info">
+	<!-- 头部  -->
+	<div class="header_con">
+    	<div class="header">
+    	     <a href="index.html" class="logo fl"><img src="images/太阳(1).png"></a>
+    		<div class="welcome fl">欢迎来到小太阳运动商城</div>
+    		<div class="fr">
+            	<div class="login_info fl" v-if="onlogin">
+            	    <a href="user.html" target="_blank"><em>{{loginName}}</em></a>
+                	<span>|</span>
+                	 <a class="regi" href="register.html" target="_blank">注册</a>
+                </div>
+                <div class="login_btn fl" v-else="onlogin">
+                	<a href="userLogin.html" target="_blank">登录</a>
+                    <span> | </span>
+                    <a  class="regi" href="register.html" target="_blank">注册</a>
+                </div>
+            	 <div class="user_link fl">
+                    <span> | </span>
+                    <a href="front/user.html" target="_blank">个人中心</a>
+                    <span> | </span>
+                    <a href="front/cart.html" target="_blank">我的购物车</a>
+                    <span> | </span>
+                    <a href="front/user.html" target="_blank">我的订单</a>
+           		 </div> 
+             </div>  
+    	</div>
+     </div>
+     <!-- 搜素框 -->
+     <!-- 搜素框 -->
+     <div class="search_bar clearfix">
+
+     		<div class="search_con fl">
+            	<form>
+                    <input type="text" class="input_text fl" name="key_words" placeholder="搜索商品">
+                    <input type="submit" class="input_btn fr"  value="搜索">
+                </form>
+            </div>
+     		<div class="guest_cart fr">
+            	<a href="front/cart.html" class="cart_name fl">我的购物车</a>
+                <div class="goods_count fl" id="show_count">{{cartCount}}</div>
+            </div>
+     </div>
+</div>
+    <!-- 全部商品分类 --> 
+    <div class="navbar_con">
+    	<div class="navbar clearfix">
+        	<!-- 动态下拉框 -->
+    		<div class="subnav_con fl">
+            	<h1 class="fl">快速导航</h1>
+            	<span></span>
+                <ul class="subnav">
+                    <li><a href="#model01" class="fruit">新鲜水果</a></li>
+
+            	</ul>
+            </div>
+    		<ul class="navlist fl">
+    			<li><a href="index.html">首页</a></li>
+                <li class="interval">|</li>
+   
+    		</ul>
+    	</div>
+    </div>
+     
+    <!-- 面包屑导航 --> 
+    <div class="breadcrumb" id="breadcrumb">
+     	<a href="javascript:void(0)">全部分类</a>
+        <span>&gt;</span>
+
+     </div>
+ <div id="app">   
+    <!-- 商品展示 -->
+    <div class="goods_details_con clearfix">
+    	<div class="goods_details_pic fl" id="goods_details_pic"><img v-for="pic in pics" :src="pic"></div>
+    	<div class="goods_details_list fr">
+        	<h3>{{goods.gname}}</h3>
+        	<p>{{goods.intro}}</p>
+        	<div class="price_bar">
+            	<span class="show_price">&yen<em>{{goods.price}}</em>元</span>
+                <span class="show_unit">单位：<em>{{goods.weight}}/{{goods.unit}}</em></span>
+            </div>
+            <div class="goods_num clearfix">
+				<div class="num_name fl">数量：</div>
+				<div class="num_add fl">
+					<input type="text" class="num_show fl"  v-model="nums">
+					<a href="javascript:;" class="add fr" @click="addNum(1)">+</a>
+					<a href="javascript:;" class="minus fr" @click="addNum(-1)">-</a>	
+				</div> 		 
+			</div>
+			
+			<div class="f1" style="margin: 10px 0px;;">库存：<em>{{goods.balance}}</em></div>
+	        <a class="f2" v-for="filed in fileds">
+            <label class="ri"><input type="radio" id="filed.fid" :name="filed.fid" :value="filed.fvalue" checked="checked" />{{filed.fvalue}}</label>
+            </a>
+            
+			<div class="total">总价：<em>{{goods.price*nums}}</em>元</div>
+			<div class="operate_btn">
+				<a href="javascript:;" class="buy_btn" id="buy_btn">立即购买</a>
+				<a href="javascript:;" class="add_cart" id="add_cart" @click="addCart()">加入购物车</a>				
+			</div>
+        </div>
+    </div>
+    
+    <!-- 商品详情 -->
+    <div class="main_wrap clearfix">
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>新品推荐</h3>
+				<ul>
+                   <li v-for="new1 in news">
+                            <a href="detail.html"><img :src="new1.pic"></a>
+                            <h4><a href="detail.html">{{new1.gname}}</a></h4>
+                            <div class="operate">
+                                <span class="prize">￥{{new1.price}}</span>
+                                
+                                <a href="#" class="add_goods" title="加入购物车"></a>
+                            </div>
+                        </li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="r_wrap fr clearfix">
+			<ul class="detail_tab clearfix">
+				<li class="good active" id="descr" @click="test($event)">商品介绍</li>
+				<li class="good " id="ocomment" @click="test($event)">评论</li>
+			</ul>
+
+			<div class="tab_content">
+				<dl id="detail1">
+					<dt>商品详情：</dt>
+					<dd>
+					<div id="goods_descr">
+					
+                   </div>
+				   </dd>
+				</dl>
+				<dl id="detail2">
+					<dt>全部评论：({{ocomment.length}})条</dt>
+					<dd >
+					<div id="goods_ocomment">
+					  
+                   </div>
+				   </dd>
+				</dl>
+			</div>
+
+		</div>
+	</div>
+   </div>  
+    <!-- 版权所有 -->
+    <div class="footer">
+    	<div class="foot_link">
+        	<a href="#">关于我们</a> <span> | </span>
+            <a href="#">联系我们</a> <span> | </span>
+            <a href="#">招聘广告</a> <span> | </span>
+            <a href="#">友情链接</a>
+        </div>
+    	<p>CopyRight &copy; 2019 衡阳市源辰信息科技有限公司 All Rights Reserverd</p>
+        <p>电话：0734-8355998 湘ICP备16015987号</p>
+    </div>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    <script src="js/slide.js"></script>
+    <script src="js/vue.js" type="text/javascript"></script>
+     <script src="js/axios.js" type="text/javascript"></script>
+    <script src="js/qs.js" type="text/javascript"></script>
+    <script src="js/checklogin.js" type="text/javascript"></script>
+	<script>
+
+
+	
+	let vm=new Vue({
+		el:"#app",
+		data:{
+			goods:[],
+			nums:1,
+			pics:[],
+			fileds:[],
+			filed:[],
+			news:[],
+			ocomment:[]
+		},methods:{
+			addNum:function(num){
+				if(num==-1&&this.nums==1){
+					return;
+				}else if(num==1&&this.nums>=this.goods.balance){
+					return;
+				}
+				this.nums=parseInt(this.nums)+num;
+				
+			},
+			addCart:function(){
+				//先判断登录
+				if(!login.$data.loginId){
+					 swal({ 
+						  title: "登录信息提示", 
+						  text:"请先登录再加入购物车", 
+						  timer: 1000, 
+						  showConfirmButton: false 
+						});
+					location.href="userLogin.html";
+					return;
+				}
+
+                 var fid=[];
+				
+				//判断商品是否已经在购物车中
+	            for(var i=0;i<this.fileds.length;i++){
+	            	var _each_this_val =this.fileds[i].fid;
+	            	fid.push(_each_this_val);   	
+	            }
+	            var new_arr=[];
+
+	         for(var i=0;i<fid.length;i++) {
+
+	            　                  　var items=fid[i];
+
+	            　               　//判断元素是否存在于new_arr中，如果不存在则插入到new_arr的最后
+
+	            　                    　if($.inArray(items,new_arr)==-1)
+	               {
+	            　                    	     new_arr.push(items);
+	               
+	               }
+
+	            }
+	         var f="";
+	         for(var i=0;i<new_arr.length;i++) {
+            	 var checked=$("input[name="+new_arr[i]+"]:checked").val();
+            	 f+=checked+",";
+                }
+	         f=f.substring(0,f.length-1);
+	          //f就是我们的规格了
+               
+				let lcarts=login.$data.carts;
+				if(lcarts.length>0){
+					for(let i=0,len=lcarts.length;i<len;i++){
+						
+						
+					if(lcarts[i].gid==this.goods.gid&&lcarts[i].filed==f){
+						
+						axios.post("cart",qs.stringify({op:"update",gid:this.goods.gid,num:this.nums,cid:lcarts[i].cid,filed:f})).then(result=>{
+							 
+							if(result.data.code==200){
+								 swal({ 
+									  title: "信息提示", 
+									  text:"加入购物车成功！", 
+									  timer: 1000, 
+									  showConfirmButton: false,
+									  type : "success"
+									});
+							  }else{
+									 swal({ 
+										  title: "信息提示", 
+										  text:"加入购物车失败！", 
+										  timer: 1000, 
+										  showConfirmButton: false,
+										  type : "error"
+										});
+								  
+							  }
+						})
+						return;
+					}
+				}
+			}
+				
+				axios.post("cart",qs.stringify({op:"add",gid:this.goods.gid,num:this.nums,uid:login.$data.loginId,filed:f})).then(result=>{
+					if(result.data.code==200){
+						console.info(result);
+						login.$data.cartCount=login.$data.cartCount+1;
+						
+						let newObj={};
+						newObj.cid=result.data.msg;
+						newObj.gid=this.goods.gid;
+						login.$data.carts.push(newObj);
+						 swal({ 
+							  title: "信息提示", 
+							  text:"加入购物车成功！", 
+							  timer: 1000, 
+							  showConfirmButton: false,
+							  type : "success"
+							});
+					}else{
+						 swal({ 
+							  title: "信息提示", 
+							  text:"加入购物车失败！", 
+							  timer: 1000, 
+							  showConfirmButton: false,
+							  type : "error"
+							});
+					}
+				
+		     	})
+				},
+		          test:function(event){
+		        	  var el=event.currentTarget;
+		        	  var check=el.innerHTML;
+		        	
+		  			good = "descr";
+					//移除原来的active的样式
+					$(".good").removeClass("active");
+					if(check == "商品介绍"){
+						$("#descr").addClass("active");
+		  				$("#detail1").css({"display":"block"});
+		  				$("#detail2").css({"display":"none"});
+					}
+					if(check == "评论"){
+						$("#ocomment").addClass("active");
+						type = "ocomment"
+			  			$("#detail2").css({"display":"block"});
+		  				$("#detail1").css({"display":"none"});
+					}
+					
+			     	var hash=decodeURI(location.hash);
+					if(hash==""||hash.indexOf("&")<=0){
+						location.href="index.html";
+						return;
+					}
+					hash=hash.replace("#","").split("&");
+					if(type=="ocomment"){
+						
+			        	axios.get("order",{params:{op:"ocomment",gid:hash[0]}}).then(result=>{
+			        		$("#goods_ocomment").html("");
+			        		this.ocomment=result.data.data; 
+			        		for(var i=0;i<this.ocomment.length;i++){
+			        			console.info(this.ocomment);
+			        			if(this.ocomment[i].ocomment!=null){
+					
+			        			$("#goods_ocomment").append('<img style="width:40px;height:40px;" src="images/logo2.png">匿名');
+			        			$("#goods_ocomment").append(this.ocomment[i].ocomment);
+			        			$("#goods_ocomment").append('<hr>');
+			        			}else{
+				        			$("#goods_ocomment").append('<img style="width:40px;height:40px;" src="images/logo2.png">匿名');
+				        			$("#goods_ocomment").append("系统默认好评");
+				        			$("#goods_ocomment").append('<hr>');
+			        			}
+			        		}
+			        		
+						});
+			        	
+			        	//alert(this.ocomment[0]);
+			        	
+
+					}
+		    
+					
+		        	  
+		          }
+		},
+		mounted:function(){
+			
+			var hash=decodeURI(location.hash);
+			if(hash==""||hash.indexOf("&")<=0){
+				location.href="index.html";
+				return;
+			}
+			hash=hash.replace("#","").split("&");
+
+    		axios.post("good",qs.stringify({op:"findByNewstname",tname:hash[1]})).then(result=>{
+    			console.info(result);
+    			if(result.data.code==200){
+    				this.news=result.data.data.news;
+    				console.info(this.news);
+    			}
+    			
+    		});
+        	axios.get("fileditem",{params:{op:"info",gid:hash[0]}}).then(result=>{
+        		console.info(result);
+        		this.fileds=result.data;
+        		console.info(this.fileds);
+				});
+        	axios.get("filed",{params:{op:"findAll"}}).then(result=>{
+        		console.info(result);
+        		this.filed=result.data;
+        		console.info(this.filed);
+				});
+        	
+			axios.all([getGoodsByGid()]).then(axios.spread((result)=>{
+			
+				this.goods=result.data.data;
+				$("#goods_descr").html(this.goods.descr);
+				this.pics=result.data.data.pics.split(",");
+				this.$nextTick(function(){
+					showPics(this.pics);
+				})
+			}));
+		}
+	})
+	
+	function getGoodsByGid(){
+		var hash=decodeURI(location.hash);
+		if(hash==""||hash.indexOf("&")<=0){
+			location.href="index.html";
+			return;
+		}
+		hash=hash.replace("#","").split("&");
+		$("#goods_tname").text(hash[1]);
+		return axios.post("good",qs.stringify({op:"findByGid",gid:hash[0]}));
+		
+	}
+	function showPics(pics){
+		var imglen=pics.length;
+
+		if(imglen>1){
+			var i=0;
+			setInterval(()=>{
+			$("#goods_details_pic>img").css("display","none");
+			$("#goods_details_pic>img").eq(i).css("display","block");
+			i=(i+1)%imglen;
+			},2000);
+		}
+	}
+		//立即购买
+		$("#buy_btn").click(function(){
+			 swal({ 
+				  title: "信息提示", 
+				  text:"请先加入购物车！", 
+				  timer: 1000, 
+				  closeOnConfirm : false,
+				  type : "error"
+				});
+		});
+		
+		//加入购物车
+		$("#add_cart").click(function(){
+			
+		});
+		
+		
+	</script>
+</body>
+</html>

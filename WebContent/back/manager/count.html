@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- 引入 ECharts 文件 这里选择min.js压缩版的echarts -->
+ 
+</head>
+
+<body> 
+<!-- 日期组件 -->
+<div id="p5" class="easyui-panel" title="类型收入占比"    
+        style="width:1180px;height:250px;padding:10px;background:#fafafa;"  
+        data-options="iconCls:'icon-save',closable:true,   
+                collapsible:true,minimizable:true,maximizable:true">  
+    <p>panel content.</p>  
+    <p>panel content.</p>  
+</div> 
+<div id=p11>
+ <input id="dd" type="text" class="easyui-datebox" required="required" value="请选择合适时间"></input> 
+
+
+<div id="p1" class="easyui-panel" title="日收入统计"    
+      style="width:1180px;height:250px;padding:10px;background:#fafafa;"  
+      data-options="iconCls:'icon-save',closable:true,   
+              collapsible:true,minimizable:true,maximizable:true">   
+    
+</div> 
+</div>
+   <div id="p2" class="easyui-panel" title="月收入统计"    
+        style="width:1180px;height:250px;padding:10px;background:#fafafa;"  
+        data-options="iconCls:'icon-save',closable:true,   
+                collapsible:true,minimizable:true,maximizable:true">   
+  </div> 
+
+   <div id="p3" class="easyui-panel" title="季度收入统计"    
+        style="width:1180px;height:250px;padding:10px;background:#fafafa;"  
+        data-options="iconCls:'icon-save',closable:true,   
+                collapsible:true,minimizable:true,maximizable:true">  
+    <p>panel content.</p>  
+    <p>panel content.</p>  
+</div> 
+<div id="p4" class="easyui-panel" title="年收入占比"    
+        style="width:1180px;height:250px;padding:10px;background:#fafafa;"  
+        data-options="iconCls:'icon-save',closable:true,   
+                collapsible:true,minimizable:true,maximizable:true">   
+</div> 
+
+<script src="../echarts/echarts.min.js"></script>
+
+<script type="text/javascript">
+$(function(){
+	var date=new Date();
+    showDay(date.getFullYear(),date.getMonth()+1);
+    showMonth(date.getFullYear());
+    showquarter(date.getFullYear());
+    showyear();
+    showtypepie();
+})
+    var monthInput=0;
+    $('#dd').datebox({
+    	onSelect: function(date){
+    		//随时间改变
+         showDay(date.getFullYear(),date.getMonth()+1);
+         showMonth(date.getFullYear());	
+         showquarter(date.getFullYear());
+    	}
+    });
+function showDay(year,month){
+      var date=[];
+      var price=[];
+	//月统计表
+	$.post("../../count",{op:"month",year:year,month:month},data=>{
+		
+		for(var i=0;i<data.length;i++){
+			date[i]=data[i].odate;
+			price[i]=data[i].price;
+		}
+		
+	       // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('p1'));
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: month+'月收入情况'
+            },
+            tooltip: {},//提示框组件（鼠标移动到数字表时触发）
+            xAxis: {  //x轴
+            	name:'/日',
+                data: date,
+            },
+            yAxis: {},//y轴 内容会自动从以下的series.data 中获取
+            series: [{
+                name: '收入/元',
+                type: 'bar', //类型为：柱状图
+                data: price, //x轴项目对应的数据
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+	},"json")
+}	
+function showMonth(year){
+    var date=[];
+    var price=[];
+	//月统计表
+	$.post("../../count",{op:"year",year:year},data=>{
+		
+		for(var i=0;i<data.length;i++){
+			date[i]=data[i].odate;
+			price[i]=data[i].price;
+		}
+		
+	       // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('p2'));
+
+      // 指定图表的配置项和数据
+      var option = {
+          title: {
+              text: year+'年月收入情况'
+          },
+          tooltip: {},//提示框组件（鼠标移动到数字表时触发）
+          xAxis: {  //x轴
+          	name:'/月',
+              data: date,
+          },
+          yAxis: {},//y轴 内容会自动从以下的series.data 中获取
+          series: [{
+              name: '收入/元',
+              type: 'bar', //类型为：柱状图
+              data: price, //x轴项目对应的数据
+          }]
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+	},"json")
+}	
+function showquarter(year){
+    var date=[];
+    var price=[];
+	//月统计表
+	$.post("../../count",{op:"quarter",year:year},data=>{
+		
+		for(var i=0;i<data.length;i++){
+			date[i]=data[i].odate;
+			price[i]=data[i].price;
+		}
+		
+	       // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('p3'));
+
+      // 指定图表的配置项和数据
+      var option = {
+          title: {
+              text: year+'季度收入情况'
+          },
+          tooltip: {},//提示框组件（鼠标移动到数字表时触发）
+          xAxis: {  //x轴
+          	name:'/季',
+              data: date,
+          },
+          yAxis: {},//y轴 内容会自动从以下的series.data 中获取
+          series: [{
+              name: '收入/元',
+              type: 'bar', //类型为：柱状图
+              data: price, //x轴项目对应的数据
+          }]
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+	},"json")
+}
+function showyear(){
+    var date=[];
+    var price=[];
+	//月统计表
+	$.post("../../count",{op:"yearyear"},data=>{
+		
+		for(var i=0;i<data.length;i++){
+			date[i]=data[i].odate;
+			price[i]=(data[i].price/10000);
+		}
+		
+	       // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('p4'));
+
+      // 指定图表的配置项和数据
+      var option = {
+          title: {
+              text: '年度收入情况'
+          },
+          tooltip: {},//提示框组件（鼠标移动到数字表时触发）
+          xAxis: {  //x轴
+          	name:'/年',
+              data: date,
+          },
+          yAxis: {},//y轴 内容会自动从以下的series.data 中获取
+          series: [{
+              name: '收入/万元',
+              type: 'bar', //类型为：柱状图
+              data: price, //x轴项目对应的数据
+          }]
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+	},"json")
+}
+function showtypepie(){
+    var date=[];
+    var price=[];
+	//月统计表
+	$.post("../../count",{op:"typepie"},data=>{
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('p5'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title : {
+            text: '小太阳运动商城商品类型收入占比',
+            x:'center'//水平居中
+        },
+        tooltip : {//提示框组件。
+            trigger: 'item',  //'item' 数据项图形触发，主要在散点图，饼图等无类目轴的图表中使用。
+            formatter: "{a} <br/>{b} : {c} ({d}%)" //{a}（系列名称），{b}（数据项名称），{c}（数值）, {d}（百分比）
+        },
+        series : [
+            {
+                name: '类型占比',
+                type: 'pie',
+                radius : '55%',//饼图的半径
+                center: ['50%', '60%'],//饼图的中心（圆心）坐标，数组的第一项是横坐标，第二项是纵坐标。
+                data:data,
+                itemStyle: {//图形样式。
+                    emphasis:{
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+	},"json")
+}
+
+    </script>
+</body>
+</html>
+

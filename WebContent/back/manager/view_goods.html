@@ -1,0 +1,95 @@
+<style type="text/css">
+*{
+	font-size: 14px;
+}
+li {
+	list-style-type: none;
+	margin-top: 10px;
+}
+</style>
+<script type="text/javascript" src="../../js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="../../js/showpic.js"></script>
+<ul>
+	<li><label>商品类型：
+	<select id="tid" name="tid">
+		<option value="0">--请选择--</option>
+	</select>
+	</label>
+	<label>商品名称：<input type="text" id="gname" name="gname" /></label>
+	<label>简介：<input type="text" id="intro" name="intro"/></label>
+	<label>库存量：<input type="number" id="balance" name="balance"/></label>
+	<label>单价：<input type="text" onkeyup="value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')" id="price" name="price" ></label>
+	</li>
+	<li><label>净重：<input type="text" id="weight" name="weight"/></label>
+	<label>单位：<input type="text" id="unit" name="unit"/></label>
+	<label>状态：<input type="radio" id="status" name="status" value="1" checked/>上架</label>
+	<label><input type="radio" id="status" name="status" value="0"/>待上架</label>
+	
+	<li><label>图像：<input type="file" id="pics" name="pics" accept="image/gif,image/jpeg" multiple="multiple" onchange="setImagePreviews(this,'show_pic')"/></label></li>
+	<li><div id="show_pic"></div></li>
+    <li><label>图像：</label> 详细描述：<textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
+	</li>
+	<li><input type="button" value="添加" onclick="add()"/></li>
+</ul>
+
+
+<script type="text/javascript">
+CKEDITOR.replace('editor1');
+//查出所有的类型
+
+$.post("../../type",{op:"findAll"},data=>{
+	var str="";
+	$.each(data,function(index,item){
+		str+="<option value='"+item.tid+"'>"+item.tname+"</option>";
+	})
+	$("#tid").html("");
+	$("#tid").append($(str));
+},"json");
+
+function add(){
+	alert('hello');
+	if($.trim($("#price").val())==0)	{
+		alert('价格不能为0');
+		return;
+	}
+	//获取表单中要提交的数据
+	var tid=$.trim($("#tid").val());
+	var gname=$.trim($("#gname").val());
+	var intro=$.trim($("#intro").val());
+	var balance=$.trim($("#balance").val());
+	var price=$.trim($("#price").val());
+	var weight=$.trim($("#weight").val());
+	var descr=CKEDITOR.instances.editor1.getData();
+	var unit=$.trim($("#unit").val());
+	var status=$('input[name="status"]:checked').val();
+
+
+	//提交所有数据到后台
+	$.ajaxFileUpload({
+	   	url:"../../good?op=add",
+	 	secureuri:false,
+	    fileElementId:["pics"],
+	    dataType:"text",
+	    data:{tid:tid,gname:gname,balance:balance,price:price,weight:weight,unit:unit,status:status,intro:intro,descr:descr},
+	    success:function(data,status){
+	    	data=parseInt($.trim(data));
+	    	if(data==-1){
+	    		alert("您输入的信息不完整......");
+	    	}else if(data>0){
+	    		CKEDITOR.instances.editor1.setData("");
+	    		$("#show_pic").html("");
+	    		alert("添加成功.....");
+	    		
+	    	}else{
+	    		alert("添加失败");
+	    		
+	    	     }
+		    },
+		    error:function(data,status,e){
+		    	alert("添加商品信息失败......\n"+e);
+		    }
+		        
+	        })
+}
+
+</script>

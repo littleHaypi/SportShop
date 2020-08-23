@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<title>小太阳运动商城前台</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="back/css/register.css">
+<link rel="stylesheet" href="css/wrap.css">
+<link rel="short icon" href="images/logo2.png" type="image/x-icon">
+<script type="text/javascript" src="back/js/jquery.min.js"></script>
+<script src="sweetalert-master/docs/assets/sweetalert/sweetalert.min.js"></script>
+<script type="text/javascript">
+function up(){
+	   var account= $('#account').val();
+	    if (account!= undefined && account!= null && account!= "") {
+	        $.post("user",{op:"img",uname:account},data=>{
+	        	console.info(data);
+	        	if(data!=null){
+	        		$('#touxiang').attr('src',data);
+	        	}else if(data==500){
+	        		$('#touxiang').attr('src',"images/logo2.png");
+	        	}
+			
+	        },"text");
+	    	
+	     }
+}
+$(document).keydown(function(e){
+	if(!e){
+		window.event;
+	}
+	if(e.keyCode==13){
+		checkLogin();
+	}
+})
+$(document).ready(function () {
+    var account= $('#account').val();
+    if (account!= undefined && account!= null && account!= "") {
+        $.post("user",{op:"img",uname:account},data=>{
+        	console.info(data);
+        	if(data!=null){
+        		$('#touxiang').attr('src',data);
+        	}else if(data==500){
+        		$('#touxiang').attr('src',"images/logo2.png");
+        	}
+		
+        },"text");
+    	
+     }
+});
+
+function checkLogin() {
+	var account = $.trim($("#account").val());
+	var pwd = $.trim($("#pwd").val());
+	var verify=$.trim($("#verify").val());
+	if (account == ""||account=="null") {
+		 swal({ 
+			  title: "登录信息提示", 
+			  text: "请输入您的用户名或邮箱号", 
+			  timer: 2000, 
+			  showConfirmButton: false 
+			});
+       return;
+	}
+	
+	if (pwd ==""||pwd=="null") {
+		 swal({ 
+			  title: "登录信息提示", 
+			  text:"请输入您的密码", 
+			  timer: 1000, 
+			  showConfirmButton: false 
+			});
+		return;
+	}
+	if (verify ==""||verify=="null") {
+		 swal({ 
+			  title: "登录信息提示", 
+			  text:"请输入您的验证码", 
+			  timer: 1000, 
+			  showConfirmButton: false 
+			});
+		return;
+	}
+    $.post("user",{op:"login",uname:account,pwd:pwd,verify:verify},data=>{
+    	data=parseInt($.trim(data));
+    	console.info(data);
+ 	   if(data==500){
+ 			 swal({ 
+ 				  title: "登录信息提示", 
+ 				  text:"请输入正确的验证码", 
+ 				  timer: 1000, 
+ 				  showConfirmButton: false 
+ 				});
+		
+   
+	   }else if(data==501){
+			 swal({ 
+				  title: "登录信息提示", 
+				  text:"你的账号或密码错误", 
+				  timer: 1000, 
+				  showConfirmButton: false 
+				});
+   		 
+   	   }else if(data==502){
+			 swal({ 
+				  title: "登录信息提示", 
+				  text:"你的账号已注销，如有疑问请拨打888888", 
+				  timer: 1000, 
+				  showConfirmButton: false 
+				});
+   	
+       }else if(data==503){
+    		 swal({ 
+				  title: "登录信息提示", 
+				  text:"你的账号已加入黑名单，如有疑问请拨打888888", 
+				  timer: 1000, 
+				  showConfirmButton: false 
+				});
+   		
+     	}else if(data==200){
+    		location.href="index.html";
+    	}else{
+    		alert("账号或密码错误..")
+    	}
+    },"text");
+	
+}
+</script>
+</head>
+<body>
+
+<div class="wrap">
+
+	   	<div class="slogn1">时尚购物无距离</div>
+		<div class="slogn2">健康运动无极限</div>
+    <!--部署内外层图片-->
+    <div class="cube">
+ 
+        <!--前面图片 -->
+        <div class="out_front">
+            <img src="https://i.loli.net/2020/08/08/wbuUQ4kOfPjgKz1.jpg" class="pic">
+        </div>
+        <!--后面图片 -->
+	
+        <div class="out_back">
+            <img src="https://i.loli.net/2020/08/08/1Utep2RFQuD5n8j.jpg" class="pic">
+        </div>
+        <!--左面图片 -->
+        <div class="out_left">
+            <img src="https://i.loli.net/2020/08/08/QbDM7wCHnVjI3l6.jpg" class="pic">
+        </div>
+        <!--右面图片 -->
+        <div class="out_right">
+            <img src="https://i.loli.net/2020/08/08/iqWdDM9ua7zSRfK.jpg" class="pic">
+        </div>
+        <!--上面图片 -->
+           <div class="out_top">
+            <img src="https://i.loli.net/2020/08/08/AmXcUzxEhiMLq9a.jpg" class="pic">
+        </div>
+        <!--下面图片 -->
+        <div class="out_bottom">
+            <img src="https://i.loli.net/2020/08/08/AsDe5Xh2VJofiHj.jpg" class="pic">
+        </div>
+
+        <!--小正方体 -->
+        <span class="in_front">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_back">
+                 <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_left">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_right">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_top">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+        <span class="in_bottom">
+                <img src="https://i.loli.net/2020/08/08/sfmKpBoqETidFPe.jpg" class="in_pic">
+            </span>
+
+    </div>
+</div>
+
+
+		<div id="login_a">
+
+			<div id="login_form" style="background:#57DDF1;">
+				<img id="touxiang"  src="images/logo2.png" style="border-radius: 50%;margin-left: 30px;width: 80px;height: 80px;margin-top: 20px; -moz-box-shadow:0 0 10px red, 2px 2px 10px 10px yellow, 4px 4px 12px 12px green;-webkit-box-shadow:0 0 10px red,  2px 2px 10px 10px yellow,4px 4px 12px 12px green; box-shadow:0 0 10px red,  2px 2px 10px 10px yellow,  4px 4px 12px 12px green;"/>
+                <form action="index.html" method="post" id="myform">
+					<div id="login_tip">
+					<div id="back">
+			         <a href="register.html">注册</a>&nbsp;&nbsp; | &nbsp;&nbsp;
+			         <a href="findpwd.html">找回密码</a>
+		            </div>
+					</div>
+
+					<div><input type="text" class="username" id="account" placeholder="请输入用户名或邮箱号..." onblur="up()"></div>
+					<div><input type="password" class="pwd" id="pwd" placeholder="请输入密码..."></div>
+					<div><input type="text" class="verify" id="verify" style="padding-left: 40px" placeholder="请输入验证码...">
+                    <img style="height: 35px;" class="code"  src="code" onclick="this.src='code?d='+new Date()"></div>
+					<div id="btn_area">
+						<input type="button"  onclick="checkLogin()" id="sub_btn" value="登&nbsp;&nbsp;录">&nbsp;&nbsp;
+					</div>
+				</form>
+			</div>
+		</div>
+
+	<div id="login_bottom" style="position: absolute;bottom: 10px;right: 20px;">
+		<label style="color:#FFF"><a class="copy" href="http://www.hyycinfo.com">小太阳运动商城 </a>&copy; 版权所有</label>
+	</div>
+</body>
+</html>

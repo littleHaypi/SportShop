@@ -1,0 +1,253 @@
+<style>
+*{
+	font-size: 12px;
+}
+li {
+	list-style-type: none;
+	margin-top: 10px;
+}
+</style>
+<table id="goodtype_data" data-options="fit:true"></table>
+<div id="view_goodtype_dialog" data-options="closed:true">
+<ul>
+	<li><label>类型名称：<input type="text" id="tname" name="tname" /></label></li>
+
+    <li>图片选择：<input type='file' id='photo' name='photo' onchange="setImagePreviews(this,'show_pic')"/></li>
+    <li><div id="show_pic"></div><li>
+</ul>
+
+</div>
+<div id="view_goodtypephoto_dialog" data-options="closed:true">
+<input type='file' id='pic' name='pic' onchange="setImagePreviews(this,'show_pic1')"/>
+<div id="show_pic1"></div>
+</div>
+<script type="text/javascript" src="../../js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="../../js/showpic.js"></script>
+<script>
+var statusObj=[{tid:1,tname:"已上架"},{tid:0,tname:"已下架"}];
+var type_editRow=undefined;
+var types_obj=$('#goodtype_data').datagrid({      
+	    url:'../../type',
+	    queryParams:{op:"findByPage"},
+	    fitColumns:true,
+	    loadMsg:'数据加载中请稍候..',
+	    striped:true,
+	    sortName:"tid",
+	    remoteSort:false,
+	    singleSelect: true,
+	    pagination:true,
+	    rownumbers:true,
+	    pageSize:10,
+	    pageList:[10,10,15,20,50,100],
+	    columns:[[    
+	        {field:'tid',title:'类型编号',width:50,align:'center',sortable:true},    
+	        {field:'tname',title:'类型名称',width:100,align:'center',editor:{type:"text",options:{required:true}}},  
+	        {field:'pic',title:'类型图片',width:100,align:'center',formatter:function(val,rows,index){
+	        	return "<img src='../../"+val+"' width='60px' height='60px'/>"
+	        }}  ]],
+		toolbar: [{
+			text:"编辑",
+			iconCls: 'icon-edit',
+			handler: function(){
+				types_op="update";
+				types_flag="修改";
+				
+				if(type_editRow!=undefined){
+					return;
+				}
+				var row=types_obj.datagrid('getSelected');
+				if(types_obj.datagrid('getSelected')==null){
+					$.messager.show({title:'温馨提示',msg:'请先选择要修改的信息...',timeout:2000,showType:'slide'});
+
+					return;
+				}
+				type_editRow=types_obj.datagrid('getRowIndex',row);
+				
+				types_obj.datagrid('beginEdit',type_editRow);
+			
+           }
+		},'-',{
+			text:"保存",
+			iconCls: 'icon-save',
+			handler: function(){
+
+				if(type_editRow==undefined){
+					return;
+				}
+				//结束编辑
+				types_obj.datagrid('endEdit',type_editRow);
+				//获取修改内容
+				var row=types_obj.datagrid('getChanges')[0];
+				
+				row["op"]=types_op;
+				
+				//提交到后台
+				$.post("../../type",row,function(data){
+					data=parseInt($.trim(data));
+					if(data>0){
+						$.messager.show({title:'成功提示',msg:types_flag+'类型信息成功...',timeout:1000,showType:'slide'});
+
+						types_obj.datagrid("reload");//刷新表格
+					}else{
+						$.messager.alert('失败提示',types_flag+'类型信息失败....','error');
+					}
+					row=null;
+					types_editRow=undefined;
+				},"text");
+
+       }
+		},'-',{
+			text:"添加",
+			iconCls: 'icon-add',
+			handler: function(){		
+				$("#view_goodtype_dialog").dialog({
+					title:"添加类型信息",
+					width:400,
+					height:400,
+					closed:false,
+					cache:false,
+					iconCls:"icon-add",
+					model:true,
+					buttons:[{
+						text:"确定",
+						iconCls:"icon-ok",
+						handler:function(){
+                            var tname=$.trim($("#tname").val());
+                            console.info(status);
+							$.ajaxFileUpload({
+								url:"../../type?op=add",
+								secureuri:false,
+							    fileElementId:["photo"],
+							    dataType:"text",
+							    data:{tname:tname},
+							    success:function(data,status){
+							    	data=parseInt($.trim(data));
+							    	if(data==-1){
+							    		swal({ 
+										  title: "信息提示", 
+										  text:"您添加的信息不完整....！", 
+										  timer: 1000, 
+										  showConfirmButton: false,
+										  type : "error"
+										});
+							    	}else if(data>0){
+							    		swal({ 
+										  title: "信息提示", 
+										  text:"添加成功！", 
+										  timer: 1000, 
+										  showConfirmButton: false,
+										  type : "success"
+										}); 
+							    		 types_obj.datagrid('reload');
+							    	}else{
+							    		swal({ 
+										  title: "信息提示", 
+										  text:"您添加的信息不完整....！", 
+										  timer: 1000, 
+										  showConfirmButton: false,
+										  type : "error"
+										});
+							    		
+							    	}
+							    },
+							    error:function(data,status,e){
+						    		swal({ 
+										  title: "信息提示", 
+										  text:"您添加的信息不完整....！", 
+										  timer: 1000, 
+										  showConfirmButton: false,
+										  type : "error"
+										});
+							    }
+							     
+							})
+							 types_obj.datagrid('reload');  
+							
+						}
+					},{
+						text:"取消",
+						iconCls:"icon-cancle",
+						handler:function(){
+							$("#view_goods_dialog").dialog('close');
+						}
+					}]
+				});
+			}
+		   
+		},'-',{
+			text:"更换图片",
+			iconCls: 'nll-icon-photo',
+			handler: function(){
+				if(types_obj.datagrid('getSelected')==null){
+					$.messager.show({title:'温馨提示',msg:'请先选择要修改的信息...',timeout:2000,showType:'slide'});
+					return;
+				}
+				
+				$("#view_goodtypephoto_dialog").dialog({
+					title:"&nbsp;&nbsp;更换图片信息",
+					width:400,
+					height:400,
+					closed:false,
+					cache:false,
+					iconCls:"nll-icon-photo",
+					model:true,
+					buttons:[{
+						text:"确定",
+						iconCls:"icon-ok",
+						handler:function(){
+							var row=types_obj.datagrid('getSelected');//拿到这个datagrid选中的那一行
+							var tid = row.tid;
+							
+							$.ajaxFileUpload({
+								url:"../../type?op=addphoto",
+								secureuri:false,
+							    fileElementId:["pic"],
+							    dataType:"text",
+							    data:{tid:tid},
+							    success:function(data,status){
+							    	data=parseInt($.trim(data));
+							    	if(data==-1){
+							    		alert("您输入的信息不完整。。。。");
+							    	}else if(data>0){
+							    		swal({ 
+											  title: "信息提示", 
+											  text:"添加成功！", 
+											  timer: 1000, 
+											  showConfirmButton: false,
+											  type : "success"
+											});   		
+							    		 types_obj.datagrid('reload'); 
+							    	}else{
+							    		alert("添加失败");
+							    		
+							    	}
+							    },
+							    error:function(data,status,e){
+							    	alert("添加头像信息失败...\n"+e);
+							    }
+							     
+							})
+							 types_obj.datagrid('reload');  
+							
+						}
+					},{
+						text:"取消",
+						iconCls:"icon-cancle",
+						handler:function(){
+							$("#view_goods_dialog").dialog('close');
+						}
+					}]
+				});
+			}
+		   
+		},'-',{
+			text:"撤销",
+			iconCls: 'icon-undo',
+			handler: function(){
+				types_obj.datagrid("rejectChanges");
+				types_editRow=undefined;
+           }
+		}]
+
+	});  
+</script>

@@ -1,0 +1,99 @@
+<style>
+*{
+	font-size: 12px;
+}
+li {
+	list-style-type: none;
+	margin-top: 10px;
+}
+</style>
+<table id="goodtype_data" data-options="fit:true"></table>
+<div id="view_goodtype_dialog" data-options="closed:true">
+<ul>
+	<li><label>类型名称：<input type="text" id="tname" name="tname" /></label></li>
+
+    <li>图片选择：<input type='file' id='photo' name='photo' onchange="setImagePreviews(this,'show_pic')"/></li>
+    <li><div id="show_pic"></div><li>
+</ul>
+
+</div>
+<div id="view_goodtypephoto_dialog" data-options="closed:true">
+<input type='file' id='pic' name='pic' onchange="setImagePreviews(this,'show_pic1')"/>
+<div id="show_pic1"></div>
+</div>
+<script type="text/javascript" src="../../js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="../../js/showpic.js"></script>
+<script>
+
+var type_editRow=undefined;
+var types_obj=$('#goodtype_data').datagrid({      
+	    url:'../../filed',
+	    queryParams:{op:"findByPage"},
+	    fitColumns:true,
+	    loadMsg:'数据加载中请稍候..',
+	    striped:true,
+	    sortName:"fid",
+	    remoteSort:false,
+	    singleSelect: true,
+	    pagination:true,
+	    rownumbers:true,
+	    pageSize:10,
+	    pageList:[10,10,15,20,50,100],
+	    columns:[[    
+	        {field:'fid',title:'属性编号',width:50,align:'center',sortable:true},    
+	        {field:'fname',title:'属性名称',width:100,align:'center',editor:{type:"text",options:{required:true}}} 
+	        ]],
+		toolbar: [{
+			text:"保存",
+			iconCls: 'icon-save',
+			handler: function(){
+
+				if(type_editRow==undefined){
+					return;
+				}
+				//结束编辑
+				types_obj.datagrid('endEdit',type_editRow);
+				//获取修改内容
+				var row=types_obj.datagrid('getChanges')[0];
+				
+				row["op"]=types_op;
+				
+				//提交到后台
+				$.post("../../filed",row,function(data){
+					data=parseInt($.trim(data));
+					if(data>0){
+						$.messager.show({title:'成功提示',msg:types_flag+'属性信息成功...',timeout:1000,showType:'slide'});
+
+						types_obj.datagrid("reload");//刷新表格
+					}else{
+						$.messager.alert('失败提示',types_flag+'属性信息失败....','error');
+					}
+					row=null;
+					types_editRow=undefined;
+				},"text");
+
+       }
+		},'-',{
+			text:"添加",
+			iconCls: 'icon-add',
+			handler: function(){
+				types_op="add";
+				types_flag="添加";
+				if(type_editRow==undefined){
+					types_obj.datagrid('insertRow',{index:0,row:{}});//插入一行
+					types_obj.datagrid('beginEdit',0);
+					type_editRow=0;
+				}
+           }
+		   
+		},'-',{
+			text:"撤销",
+			iconCls: 'icon-undo',
+			handler: function(){
+				types_obj.datagrid("rejectChanges");
+				types_editRow=undefined;
+           }
+		}]
+
+	});  
+</script>

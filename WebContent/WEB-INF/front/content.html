@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<base href="../">
+<title>小太阳--商品评价</title>
+<link rel="short icon" href="images/logo2.png" type="image/x-icon">
+</head>
+<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+<script src="js/slide.js"></script>
+<script src="js/vue.js" type="text/javascript"></script>
+ <script src="js/axios.js" type="text/javascript"></script>
+<script src="js/qs.js" type="text/javascript"></script>
+<script src="js/checklogin.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<body>
+
+<textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
+<input type="button" value="添加" onclick="add()"/>
+
+<script type="text/javascript">
+  CKEDITOR.replace('editor1');
+  function add(){
+	    var hash=decodeURI(location.hash);
+		if(hash==""||hash.indexOf("&")<=0){
+			location.href="index.html";
+			return;
+		}
+		
+	  hash=hash.replace("#","").split("&");
+	  var ocomment=CKEDITOR.instances.editor1.getData();
+		axios.post("order",qs.stringify({op:"addcomment",iid:hash[0],ocomment:ocomment})).then(result=>{
+			
+			if(result.data.code==200){
+				  title: "信息提示", 
+				  text:"评价完成....！", 
+				  timer: 1000, 
+				  showConfirmButton: false,
+				  type:"success"
+				});
+              location.href="front/user.html";
+			}
+		})
+	  
+  }
+</script>
+</body>
+</html>

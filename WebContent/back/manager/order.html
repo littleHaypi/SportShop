@@ -1,0 +1,115 @@
+<table id="order_data" data-options="fit:true"></table>
+<div id="view_goods_dialog" data-options="closed:true">
+<input type='file' id='photo' name='photo' onchange="setImagePreviews(this,'show_pic')"/>
+<div id="show_pic"></div>
+</div>
+<script type="text/javascript" src="../../js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="../../js/showpic.js"></script>
+<script>
+var statusObj=[{tid:2,tname:"已支付"},{tid:3,tname:"已发货"}];
+var order_editRow=undefined;
+var orders_obj=$('#order_data').datagrid({      
+	    url:'../../order',
+	    queryParams:{op:"findByPage"},
+	    fitColumns:true,
+	    loadMsg:'数据加载中请稍候..',
+	    striped:true,
+	    sortName:"odate",
+	    sortOrder:"desc",
+	    remoteSort:false,
+	    singleSelect: true,
+	    pagination:true,
+	    rownumbers:true,
+	    pageSize:5,
+	    pageList:[5,10,15,20,50,100],
+	    columns:[[    
+	        {field:'oid',title:'订单编号',width:50,align:'center'},    
+	        {field:'odate',title:'下单时间',width:100,align:'center',sortable:true},
+	        {field:'addr',title:'地址',width:130,align:'center'},  
+	        {field:'price',title:'交易金额',width:100,align:'center'},   
+	        {field:'status',title:'订单状态',width:20,align:'center',formatter:function(val,rows,index){
+	        	if(val==1){
+	        		return "已下单";
+	        	}else if(val==2){
+	        		return "已支付";
+	        	}else if(val==3){
+	        		return "已发货";
+	        	}else{
+	        		return "已完成";
+	        	}
+	        },editor:{type:"combobox",options:{required:true,valueField:"tid",textField:"tname",data:statusObj}}}
+	    ]],
+		toolbar: [{
+			text:"发货",
+			iconCls: 'icon-edit',
+			handler: function(){
+				orders_op="update";
+				orders_flag="修改";
+				
+				if(order_editRow!=undefined){
+					return;
+				}
+				var row=orders_obj.datagrid('getSelected');
+				if(row.status==1){
+					swal({
+					  title: "信息提示", 
+					  text:"用户还未付款,无法发货....！", 
+					  timer: 1000, 
+					  showConfirmButton: false,
+					  type : "error"
+					});
+					return;
+				}
+				
+				if(orders_obj.datagrid('getSelected')==null){
+					$.messager.show({title:'温馨提示',msg:'请先选择要修改的信息...',timeout:1000,showType:'slide'});
+
+					return;
+				}
+				order_editRow=orders_obj.datagrid('getRowIndex',row);
+				
+				orders_obj.datagrid('beginEdit',order_editRow);
+			
+           }
+		},'-',{
+			text:"保存",
+			iconCls: 'icon-save',
+			handler: function(){
+
+				if(order_editRow==undefined){
+					return;
+				}
+				//结束编辑
+				orders_obj.datagrid('endEdit',order_editRow);
+				//获取修改内容
+				var row=orders_obj.datagrid('getChanges')[0];
+				
+				row["op"]=orders_op;
+				
+				//提交到后台
+				$.post("../../order",row,function(data){
+					
+					data=parseInt($.trim(data));
+					if(data>0){
+						$.messager.show({title:'成功提示',msg:orders_flag+'订单信息成功...',timeout:1000,showType:'slide'});
+
+						orders_obj.datagrid("reload");//刷新表格
+					}else{
+						$.messager.alert('失败提示',types_flag+'用户信息失败....','error');
+					}
+					row=null;
+					order_editRow=undefined;
+				},"text");
+
+       }
+		},'-',{
+			text:"撤销",
+			iconCls: 'icon-undo',
+			handler: function(){
+				orders_obj.datagrid("rejectChanges");
+				orders_editRow=undefined;
+           }
+		}]
+
+	});  
+</script>
